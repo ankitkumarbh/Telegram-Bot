@@ -232,6 +232,12 @@ def start(update: Update, context: CallbackContext):
                                 url=f"https://t.me/{SUPPORT_CHAT}",
                             ),
                         ],
+                        [
+                            InlineKeyboardButton(
+                                text="🔥Discount Shopping Loot🔥",
+                                url=f"https://t.me/+awIY9JHCOsU0MGQ1",
+                            ),
+                        ],
                    ]
                 ),
             )
