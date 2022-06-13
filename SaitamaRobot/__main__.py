@@ -234,7 +234,7 @@ def start(update: Update, context: CallbackContext):
                         ],
                         [
                             InlineKeyboardButton(
-                                text="🔥Discount Shopping Loot🔥",
+                                text="🔥Big Discount Shopping Loot🔥",
                                 url=f"https://t.me/+awIY9JHCOsU0MGQ1",
                             ),
                         ],
