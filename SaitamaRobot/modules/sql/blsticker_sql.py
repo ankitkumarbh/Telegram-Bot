@@ -57,6 +57,7 @@ def add_to_stickers(chat_id, trigger):
 
         SESSION.merge(stickers_filt)  # merge to avoid duplicate key issues
         SESSION.commit()
+        SESSION.close()
         global CHAT_STICKERS
         if CHAT_STICKERS.get(str(chat_id), set()) == set():
             CHAT_STICKERS[str(chat_id)] = {trigger}
@@ -73,6 +74,7 @@ def rm_from_stickers(chat_id, trigger):
 
             SESSION.delete(stickers_filt)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -135,11 +137,13 @@ def set_blacklist_strength(chat_id, blacklist_type, value):
 
         SESSION.add(curr_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_blacklist_setting(chat_id):
     try:
         setting = CHAT_BLSTICK_BLACKLISTS.get(str(chat_id))
+        SESSION.close()
         if setting:
             return setting["blacklist_type"], setting["value"]
         else:
@@ -157,6 +161,7 @@ def __load_CHAT_STICKERS():
             CHAT_STICKERS[chat_id] = []
 
         all_filters = SESSION.query(StickersFilters).all()
+        SESSION.close()
         for x in all_filters:
             CHAT_STICKERS[x.chat_id] += [x.trigger]
 
@@ -170,6 +175,7 @@ def __load_chat_stickerset_blacklists():
     global CHAT_BLSTICK_BLACKLISTS
     try:
         chats_settings = SESSION.query(StickerSettings).all()
+        SESSION.close()
         for x in chats_settings:  # remove tuple by ( ,)
             CHAT_BLSTICK_BLACKLISTS[x.chat_id] = {
                 "blacklist_type": x.blacklist_type,
@@ -190,6 +196,7 @@ def migrate_chat(old_chat_id, new_chat_id):
         for filt in chat_filters:
             filt.chat_id = str(new_chat_id)
         SESSION.commit()
+        SESSION.close()
 
 
 __load_CHAT_STICKERS()
