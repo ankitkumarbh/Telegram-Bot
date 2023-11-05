@@ -32,6 +32,7 @@ def set_chat_log_channel(chat_id, log_channel):
 
         CHANNELS[str(chat_id)] = log_channel
         SESSION.commit()
+        SESSION.close()
 
 
 def get_chat_log_channel(chat_id):
@@ -48,6 +49,7 @@ def stop_chat_logging(chat_id):
             log_channel = res.log_channel
             SESSION.delete(res)
             SESSION.commit()
+            SESSION.close()
             return log_channel
 
 
@@ -68,12 +70,14 @@ def migrate_chat(old_chat_id, new_chat_id):
                 CHANNELS[str(new_chat_id)] = CHANNELS.get(str(old_chat_id))
 
         SESSION.commit()
+        SESSION.close()
 
 
 def __load_log_channels():
     global CHANNELS
     try:
         all_chats = SESSION.query(GroupLogs).all()
+        SESSION.close()
         CHANNELS = {chat.chat_id: chat.log_channel for chat in all_chats}
     finally:
         SESSION.close()
