@@ -182,6 +182,7 @@ def add_filter(
 
         SESSION.add(filt)
         SESSION.commit()
+        SESSION.close()
 
     for b_name, url, same_line in buttons:
         add_note_button_to_db(chat_id, keyword, b_name, url, same_line)
@@ -230,6 +231,7 @@ def new_add_filter(chat_id, keyword, reply_text, file_type, file_id, buttons):
 
         SESSION.add(filt)
         SESSION.commit()
+        SESSION.close()
 
     for b_name, url, same_line in buttons:
         add_note_button_to_db(chat_id, keyword, b_name, url, same_line)
@@ -239,6 +241,7 @@ def remove_filter(chat_id, keyword):
     global CHAT_FILTERS
     with CUST_FILT_LOCK:
         filt = SESSION.query(CustomFilters).get((str(chat_id), keyword))
+        SESSION.close()
         if filt:
             if keyword in CHAT_FILTERS.get(str(chat_id), []):  # Sanity check
                 CHAT_FILTERS.get(str(chat_id), []).remove(keyword)
@@ -254,6 +257,7 @@ def remove_filter(chat_id, keyword):
 
             SESSION.delete(filt)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -289,6 +293,7 @@ def add_note_button_to_db(chat_id, keyword, b_name, url, same_line):
         button = Buttons(chat_id, keyword, b_name, url, same_line)
         SESSION.add(button)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_buttons(chat_id, keyword):
@@ -332,6 +337,7 @@ def __load_chat_filters():
             x: sorted(set(y), key=lambda i: (-len(i), i))
             for x, y in CHAT_FILTERS.items()
         }
+        SESSION.close()
 
     finally:
         SESSION.close()
@@ -369,6 +375,7 @@ def __migrate_filters():
 
             SESSION.add(filt)
             SESSION.commit()
+        SESSION.close()
 
     finally:
         SESSION.close()
@@ -396,6 +403,7 @@ def migrate_chat(old_chat_id, new_chat_id):
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
             SESSION.commit()
+        SESSION.close()
 
 
 __load_chat_filters()
