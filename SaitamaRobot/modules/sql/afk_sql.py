@@ -33,7 +33,9 @@ def is_afk(user_id):
 
 def check_afk_status(user_id):
     try:
-        return SESSION.query(AFK).get(user_id)
+        cas = SESSION.query(AFK).get(user_id)
+        SESSION.close()
+        return cas
     finally:
         SESSION.close()
 
@@ -41,6 +43,7 @@ def check_afk_status(user_id):
 def set_afk(user_id, reason=""):
     with INSERTION_LOCK:
         curr = SESSION.query(AFK).get(user_id)
+        SESSION.close()
         if not curr:
             curr = AFK(user_id, reason, True)
         else:
@@ -50,17 +53,20 @@ def set_afk(user_id, reason=""):
 
         SESSION.add(curr)
         SESSION.commit()
+        SESSION.close()
 
 
 def rm_afk(user_id):
     with INSERTION_LOCK:
         curr = SESSION.query(AFK).get(user_id)
+        SESSION.close()
         if curr:
             if user_id in AFK_USERS:  # sanity check
                 del AFK_USERS[user_id]
 
             SESSION.delete(curr)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -70,6 +76,7 @@ def rm_afk(user_id):
 def toggle_afk(user_id, reason=""):
     with INSERTION_LOCK:
         curr = SESSION.query(AFK).get(user_id)
+        SESSION.close()
         if not curr:
             curr = AFK(user_id, reason, True)
         elif curr.is_afk:
@@ -78,12 +85,14 @@ def toggle_afk(user_id, reason=""):
             curr.is_afk = True
         SESSION.add(curr)
         SESSION.commit()
+        SESSION.close()
 
 
 def __load_afk_users():
     global AFK_USERS
     try:
         all_afk = SESSION.query(AFK).all()
+        SESSION.close()
         AFK_USERS = {user.user_id: user.reason for user in all_afk if user.is_afk}
     finally:
         SESSION.close()
