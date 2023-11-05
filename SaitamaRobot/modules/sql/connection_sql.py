@@ -63,6 +63,7 @@ HISTORY_CONNECT = {}
 def allow_connect_to_chat(chat_id: Union[str, int]) -> bool:
     try:
         chat_setting = SESSION.query(ChatAccessConnectionSettings).get(str(chat_id))
+        SESSION.close()
         if chat_setting:
             return chat_setting.allow_connect_to_chat
         return False
@@ -79,6 +80,7 @@ def set_allow_connect_to_chat(chat_id: Union[int, str], setting: bool):
         chat_setting.allow_connect_to_chat = setting
         SESSION.add(chat_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def connect(user_id, chat_id):
@@ -89,6 +91,7 @@ def connect(user_id, chat_id):
         connect_to_chat = Connection(int(user_id), chat_id)
         SESSION.add(connect_to_chat)
         SESSION.commit()
+        SESSION.close()
         return True
 
 
@@ -112,6 +115,7 @@ def disconnect(user_id):
         if disconnect:
             SESSION.delete(disconnect)
             SESSION.commit()
+            SESSION.close()
             return True
         else:
             SESSION.close()
@@ -159,6 +163,7 @@ def add_history_conn(user_id, chat_id, chat_name):
         history = ConnectionHistory(int(user_id), str(chat_id), chat_name, conn_time)
         SESSION.add(history)
         SESSION.commit()
+        SESSION.close()
         HISTORY_CONNECT[int(user_id)][conn_time] = {
             "chat_name": chat_name,
             "chat_id": str(chat_id),
@@ -181,6 +186,7 @@ def clear_history_conn(user_id):
             SESSION.delete(delold)
             HISTORY_CONNECT[int(user_id)].pop(x)
     SESSION.commit()
+    SESSION.close()
     return True
 
 
@@ -188,6 +194,7 @@ def __load_user_history():
     global HISTORY_CONNECT
     try:
         qall = SESSION.query(ConnectionHistory).all()
+        SESSION.close()
         HISTORY_CONNECT = {}
         for x in qall:
             check = HISTORY_CONNECT.get(x.user_id)
