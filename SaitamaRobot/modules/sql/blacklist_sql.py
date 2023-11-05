@@ -58,6 +58,7 @@ def add_to_blacklist(chat_id, trigger):
 
         SESSION.merge(blacklist_filt)  # merge to avoid duplicate key issues
         SESSION.commit()
+        SESSION.close()
         global CHAT_BLACKLISTS
         if CHAT_BLACKLISTS.get(str(chat_id), set()) == set():
             CHAT_BLACKLISTS[str(chat_id)] = {trigger}
@@ -74,6 +75,7 @@ def rm_from_blacklist(chat_id, trigger):
 
             SESSION.delete(blacklist_filt)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -86,7 +88,9 @@ def get_chat_blacklist(chat_id):
 
 def num_blacklist_filters():
     try:
-        return SESSION.query(BlackListFilters).count()
+        numb = SESSION.query(BlackListFilters).count()
+        SESSION.close()
+        return numb
     finally:
         SESSION.close()
 
@@ -104,7 +108,9 @@ def num_blacklist_chat_filters(chat_id):
 
 def num_blacklist_filter_chats():
     try:
-        return SESSION.query(func.count(distinct(BlackListFilters.chat_id))).scalar()
+        numb2 = SESSION.query(func.count(distinct(BlackListFilters.chat_id))).scalar()
+        SESSION.close()
+        return numb2
     finally:
         SESSION.close()
 
@@ -122,6 +128,7 @@ def set_blacklist_strength(chat_id, blacklist_type, value):
     with BLACKLIST_SETTINGS_INSERTION_LOCK:
         global CHAT_SETTINGS_BLACKLISTS
         curr_setting = SESSION.query(BlacklistSettings).get(str(chat_id))
+        SESSION.close()
         if not curr_setting:
             curr_setting = BlacklistSettings(
                 chat_id, blacklist_type=int(blacklist_type), value=value
@@ -136,6 +143,7 @@ def set_blacklist_strength(chat_id, blacklist_type, value):
 
         SESSION.add(curr_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_blacklist_setting(chat_id):
@@ -154,10 +162,12 @@ def __load_chat_blacklists():
     global CHAT_BLACKLISTS
     try:
         chats = SESSION.query(BlackListFilters.chat_id).distinct().all()
+        SESSION.close()
         for (chat_id,) in chats:  # remove tuple by ( ,)
             CHAT_BLACKLISTS[chat_id] = []
 
         all_filters = SESSION.query(BlackListFilters).all()
+        SESSION.close()
         for x in all_filters:
             CHAT_BLACKLISTS[x.chat_id] += [x.trigger]
 
@@ -171,6 +181,7 @@ def __load_chat_settings_blacklists():
     global CHAT_SETTINGS_BLACKLISTS
     try:
         chats_settings = SESSION.query(BlacklistSettings).all()
+        SESSION.close()
         for x in chats_settings:  # remove tuple by ( ,)
             CHAT_SETTINGS_BLACKLISTS[x.chat_id] = {
                 "blacklist_type": x.blacklist_type,
@@ -188,9 +199,11 @@ def migrate_chat(old_chat_id, new_chat_id):
             .filter(BlackListFilters.chat_id == str(old_chat_id))
             .all()
         )
+        SESSION.close()
         for filt in chat_filters:
             filt.chat_id = str(new_chat_id)
         SESSION.commit()
+        SESSION.close()
 
 
 __load_chat_blacklists()
