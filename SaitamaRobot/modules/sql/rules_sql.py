@@ -30,6 +30,7 @@ def set_rules(chat_id, rules_text):
 
         SESSION.add(rules)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_rules(chat_id):
@@ -55,3 +56,4 @@ def migrate_chat(old_chat_id, new_chat_id):
         if chat:
             chat.chat_id = str(new_chat_id)
         SESSION.commit()
+        SESSION.close()
