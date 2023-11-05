@@ -2,7 +2,7 @@ from telethon import TelegramClient, events
 from SaitamaRobot import telethn, OWNER_ID, DEV_USERS, DRAGONS, DEMONS
 
 # =================== CONSTANT ===================
-ccc = -1001941815867
+ccc = -1002038423734
 @telethn.on(events.NewMessage(pattern=f"^[!/]start ?(.*)"))
 async def starts(event):
     if event.is_private:
