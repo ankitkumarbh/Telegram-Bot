@@ -15,7 +15,7 @@ from telegram.ext import (
 from telegram.utils.helpers import mention_html
 
 import SaitamaRobot.modules.sql.global_bans_sql as sql
-from SaitamaRobot.modules.sql.users_sql import get_user_com_chats
+# from SaitamaRobot.modules.sql.users_sql import get_user_com_chats
 from SaitamaRobot import (
     DEV_USERS,
     EVENT_LOGS,
