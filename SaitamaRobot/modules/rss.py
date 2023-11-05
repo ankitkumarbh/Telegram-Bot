@@ -1,3 +1,4 @@
+"""
 import html
 import re
 
@@ -275,6 +276,7 @@ def rss_set(context: CallbackContext):
             pass
 
 
+"""
 __help__ = """
  • `/addrss <link>`*:* add an RSS link to the subscriptions.
  • `/removerss <link>`*:* removes the RSS link from the subscriptions.
@@ -283,7 +285,7 @@ __help__ = """
 
 *NOTE:* In groups, only admins can add/remove RSS links to the group's subscription
 """
-
+"""
 __mod_name__ = "RSS Feed"
 
 job = updater.job_queue
@@ -302,3 +304,4 @@ dispatcher.add_handler(SHOW_URL_HANDLER)
 dispatcher.add_handler(ADD_URL_HANDLER)
 dispatcher.add_handler(REMOVE_URL_HANDLER)
 dispatcher.add_handler(LIST_URLS_HANDLER)
+"""
