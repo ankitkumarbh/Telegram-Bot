@@ -21,7 +21,7 @@ USERS_GROUP = 4
 CHAT_GROUP = 5
 DEV_AND_MORE = DEV_USERS.append(int(OWNER_ID))
 
-
+"""
 def get_user_id(username):
     # ensure valid userid
     if len(username) <= 5:
@@ -53,7 +53,7 @@ def get_user_id(username):
 
     return None
 
-
+"""
 @run_async
 @dev_plus
 def broadcast(update: Update, context: CallbackContext):
@@ -156,7 +156,7 @@ def chat_checker(update: Update, context: CallbackContext):
     except Unauthorized:
         pass
 
-
+"""
 def __user_info__(user_id):
     if user_id in [777000, 1087968824]:
         return """╘══「 Groups count: <code>???</code> 」"""
@@ -173,7 +173,7 @@ def __stats__():
 def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
-
+"""
 __help__ = ""  # no help string
 
 BROADCAST_HANDLER = CommandHandler(
