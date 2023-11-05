@@ -24,6 +24,7 @@ INSERTION_LOCK = threading.RLock()
 def is_chat(chat_id):
     try:
         chat = SESSION.query(ChatbotChats).get(str(chat_id))
+        SESSION.close()
         if chat:
             return True
         else:
@@ -43,6 +44,7 @@ def set_ses(chat_id, ses_id, expires):
 
         SESSION.add(autochat)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_ses(chat_id):
@@ -64,6 +66,7 @@ def rem_chat(chat_id):
             SESSION.delete(autochat)
 
         SESSION.commit()
+        SESSION.close()
 
 
 def get_all_chats():
