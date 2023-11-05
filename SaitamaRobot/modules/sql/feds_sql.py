@@ -223,6 +223,7 @@ def new_fed(owner_id, fed_name, fed_id):
             "flog": None,
             "fusers": str({"owner": str(owner_id), "members": "[]"}),
         }
+        SESSION.close()
         return fed
 
 
@@ -277,6 +278,7 @@ def del_fed(fed_id):
         if curr:
             SESSION.delete(curr)
             SESSION.commit()
+        SESSION.close()
         return True
 
 
@@ -288,6 +290,7 @@ def rename_fed(fed_id, owner_id, newname):
             return False
         fed.fed_name = newname
         SESSION.commit()
+        SESSION.close()
 
         # Update the dicts
         oldname = FEDERATION_BYFEDID[str(fed_id)]["fname"]
@@ -311,6 +314,7 @@ def chat_join_fed(fed_id, chat_name, chat_id):
             FEDERATION_CHATS_BYID[fed_id] = []
         FEDERATION_CHATS_BYID[fed_id].append(str(chat_id))
         SESSION.commit()
+        SESSION.close()
         return r
 
 
@@ -416,6 +420,7 @@ def user_join_fed(fed_id, user_id):
         )
         SESSION.merge(fed)
         SESSION.commit()
+        SESSION.close()
         __load_all_feds_chats()
         return True
 
@@ -437,6 +442,7 @@ def chat_leave_fed(chat_id):
             if int(U.chat_id) == int(chat_id):
                 SESSION.delete(U)
                 SESSION.commit()
+                SESSION.close()
         return True
 
 
@@ -487,6 +493,7 @@ def set_frules(fed_id, rules):
         )
         SESSION.merge(fed)
         SESSION.commit()
+        SESSION.close()
         return True
 
 
@@ -513,9 +520,11 @@ def fban_user(fed_id, user_id, first_name, last_name, user_name, reason, time):
             SESSION.commit()
         except:
             SESSION.rollback()
+            SESSION.close()
             return False
         finally:
             SESSION.commit()
+        SESSION.close()
         __load_all_feds_banned()
         return r
 
@@ -565,9 +574,11 @@ def multi_fban_user(
             SESSION.commit()
         except:
             SESSION.rollback()
+            SESSION.close()
             return False
         finally:
             SESSION.commit()
+        SESSION.close()
         __load_all_feds_banned()
         print("Done")
         return counter
@@ -584,9 +595,11 @@ def un_fban_user(fed_id, user_id):
             SESSION.commit()
         except:
             SESSION.rollback()
+            SESSION.close()
             return False
         finally:
             SESSION.commit()
+        SESSION.close()
         __load_all_feds_banned()
         return I
 
@@ -597,6 +610,7 @@ def get_fban_user(fed_id, user_id):
         FEDERATION_BANNED_USERID[fed_id] = []
     if user_id in FEDERATION_BANNED_USERID[fed_id]:
         r = SESSION.query(BansF).all()
+        SESSION.close()
         reason = None
         for I in r:
             if I.fed_id == fed_id:
@@ -673,6 +687,7 @@ def set_feds_setting(user_id: int, setting: bool):
         FEDERATION_NOTIFICATION[str(user_id)] = setting
         SESSION.add(user_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_fed_log(fed_id):
@@ -716,6 +731,7 @@ def set_fed_log(fed_id, chat_id):
         )
         SESSION.merge(fed)
         SESSION.commit()
+        SESSION.close()
         print(fed_log)
         return True
 
@@ -729,6 +745,7 @@ def subs_fed(fed_id, my_fed):
 
         SESSION.merge(subsfed)  # merge to avoid duplicate key issues
         SESSION.commit()
+        SESSION.close()
         global FEDS_SUBSCRIBER
         if FEDS_SUBSCRIBER.get(fed_id, set()) == set():
             FEDS_SUBSCRIBER[fed_id] = {my_fed}
@@ -746,6 +763,7 @@ def unsubs_fed(fed_id, my_fed):
 
             SESSION.delete(getsubs)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -809,6 +827,7 @@ def __load_all_feds():
                 "flog": x.fed_log,
                 "fusers": str(x.fed_users),
             }
+        SESSION.close()
     finally:
         SESSION.close()
 
@@ -830,6 +849,7 @@ def __load_all_feds_chats():
             if check is None:
                 FEDERATION_CHATS_BYID[x.fed_id] = []
             FEDERATION_CHATS_BYID[x.fed_id].append(x.chat_id)
+        SESSION.close()
     finally:
         SESSION.close()
 
@@ -856,6 +876,7 @@ def __load_all_feds_banned():
                 "reason": x.reason,
                 "time": x.time,
             }
+        SESSION.close()
     finally:
         SESSION.close()
 
@@ -864,6 +885,7 @@ def __load_all_feds_settings():
     global FEDERATION_NOTIFICATION
     try:
         getuser = SESSION.query(FedsUserSettings).all()
+        SESSION.close()
         for x in getuser:
             FEDERATION_NOTIFICATION[str(x.user_id)] = x.should_report
     finally:
@@ -892,6 +914,7 @@ def __load_feds_subscriber():
 
         FEDS_SUBSCRIBER = {x: set(y) for x, y in FEDS_SUBSCRIBER.items()}
         MYFEDS_SUBSCRIBER = {x: set(y) for x, y in MYFEDS_SUBSCRIBER.items()}
+        SESSION.close()
 
     finally:
         SESSION.close()
