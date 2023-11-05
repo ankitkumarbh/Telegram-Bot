@@ -1,4 +1,4 @@
-"""
+
 import threading
 
 from SaitamaRobot.modules.sql import BASE, SESSION
@@ -90,4 +90,3 @@ def __load_afk_users():
 
 
 __load_afk_users()
-"""
