@@ -74,6 +74,7 @@ def add_note_to_db(chat_id, note_name, note_data, msgtype, buttons=None, file=No
         )
         SESSION.add(note)
         SESSION.commit()
+        SESSION.close()
 
     for b_name, url, same_line in buttons:
         add_note_button_to_db(chat_id, note_name, b_name, url, same_line)
@@ -111,6 +112,7 @@ def rm_note(chat_id, note_name):
 
             SESSION.delete(note)
             SESSION.commit()
+            SESSION.close()
             return True
 
         else:
@@ -135,6 +137,7 @@ def add_note_button_to_db(chat_id, note_name, b_name, url, same_line):
         button = Buttons(chat_id, note_name, b_name, url, same_line)
         SESSION.add(button)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_buttons(chat_id, note_name):
@@ -179,3 +182,4 @@ def migrate_chat(old_chat_id, new_chat_id):
                 btn.chat_id = str(new_chat_id)
 
         SESSION.commit()
+        SESSION.close()
