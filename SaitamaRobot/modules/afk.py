@@ -1,4 +1,4 @@
-"""
+
 import random, html
 
 from SaitamaRobot import dispatcher
@@ -15,7 +15,7 @@ from telegram.ext import CallbackContext, Filters, MessageHandler, run_async
 AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
-
+"""
 @run_async
 def afk(update: Update, context: CallbackContext):
     args = update.effective_message.text.split(None, 1)
@@ -122,7 +122,7 @@ def reply_afk(update: Update, context: CallbackContext):
         user_id = message.reply_to_message.from_user.id
         fst_name = message.reply_to_message.from_user.first_name
         check_afk(update, context, user_id, fst_name, userc_id)
-
+"""
 
 def check_afk(update, context, user_id, fst_name, userc_id):
     if sql.is_afk(user_id):
@@ -139,7 +139,6 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             update.effective_message.reply_text(res, parse_mode="html")
 
 
-"""
 __help__ = """
  • `/afk <reason>`*:* mark yourself as AFK(away from keyboard).
  • `brb <reason>`*:* same as the afk command - but not a command.
