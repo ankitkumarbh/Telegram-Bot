@@ -81,6 +81,7 @@ def ensure_bot_in_db():
         bot = Users(dispatcher.bot.id, dispatcher.bot.username)
         SESSION.merge(bot)
         SESSION.commit()
+        SESSION.close()
 
 
 def update_user(user_id, username, chat_id=None, chat_name=None):
@@ -116,6 +117,7 @@ def update_user(user_id, username, chat_id=None, chat_name=None):
             SESSION.add(chat_member)
 
         SESSION.commit()
+        SESSION.close()
 
 
 def get_userid_by_name(username):
@@ -171,6 +173,7 @@ def get_user_com_chats(user_id):
         chat_members = (
             SESSION.query(ChatMembers).filter(ChatMembers.user == int(user_id)).all()
         )
+        SESSION.close()
         return [i.chat for i in chat_members]
     finally:
         SESSION.close()
@@ -205,6 +208,7 @@ def migrate_chat(old_chat_id, new_chat_id):
         for member in chat_members:
             member.chat = str(new_chat_id)
         SESSION.commit()
+        SESSION.close()
 
 
 ensure_bot_in_db()
@@ -230,5 +234,6 @@ def rem_chat(chat_id):
         if chat:
             SESSION.delete(chat)
             SESSION.commit()
+            SESSION.close()
         else:
             SESSION.close()
