@@ -26,6 +26,7 @@ DISABLED = {}
 def disable_command(chat_id, disable):
     with DISABLE_INSERTION_LOCK:
         disabled = SESSION.query(Disable).get((str(chat_id), disable))
+        SESSION.close()
 
         if not disabled:
             DISABLED.setdefault(str(chat_id), set()).add(disable)
@@ -33,6 +34,7 @@ def disable_command(chat_id, disable):
             disabled = Disable(str(chat_id), disable)
             SESSION.add(disabled)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -42,6 +44,7 @@ def disable_command(chat_id, disable):
 def enable_command(chat_id, enable):
     with DISABLE_INSERTION_LOCK:
         disabled = SESSION.query(Disable).get((str(chat_id), enable))
+        SESSION.close()
 
         if disabled:
             if enable in DISABLED.get(str(chat_id)):  # sanity check
@@ -49,6 +52,7 @@ def enable_command(chat_id, enable):
 
             SESSION.delete(disabled)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -88,12 +92,14 @@ def migrate_chat(old_chat_id, new_chat_id):
             DISABLED[str(new_chat_id)] = DISABLED.get(str(old_chat_id), set())
 
         SESSION.commit()
+        SESSION.close()
 
 
 def __load_disabled_commands():
     global DISABLED
     try:
         all_chats = SESSION.query(Disable).all()
+        SESSION.close()
         for chat in all_chats:
             DISABLED.setdefault(chat.chat_id, set()).add(chat.command)
 
