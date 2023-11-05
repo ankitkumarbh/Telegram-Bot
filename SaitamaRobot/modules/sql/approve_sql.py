@@ -28,11 +28,14 @@ def approve(chat_id, user_id):
         approve_user = Approvals(str(chat_id), user_id)
         SESSION.add(approve_user)
         SESSION.commit()
+        SESSION.close()
 
 
 def is_approved(chat_id, user_id):
     try:
-        return SESSION.query(Approvals).get((str(chat_id), user_id))
+        isapp = SESSION.query(Approvals).get((str(chat_id), user_id))
+        SESSION.close()
+        return isapp
     finally:
         SESSION.close()
 
@@ -40,9 +43,11 @@ def is_approved(chat_id, user_id):
 def disapprove(chat_id, user_id):
     with APPROVE_INSERTION_LOCK:
         disapprove_user = SESSION.query(Approvals).get((str(chat_id), user_id))
+        SESSION.close()
         if disapprove_user:
             SESSION.delete(disapprove_user)
             SESSION.commit()
+            SESSION.close()
             return True
         else:
             SESSION.close()
