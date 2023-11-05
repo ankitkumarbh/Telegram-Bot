@@ -91,6 +91,7 @@ def init_permissions(chat_id, reset=False):
     perm = Permissions(str(chat_id))
     SESSION.add(perm)
     SESSION.commit()
+    SESSION.close()
     return perm
 
 
@@ -102,6 +103,7 @@ def init_restrictions(chat_id, reset=False):
     restr = Restrictions(str(chat_id))
     SESSION.add(restr)
     SESSION.commit()
+    SESSION.close()
     return restr
 
 
@@ -148,6 +150,7 @@ def update_lock(chat_id, lock_type, locked):
 
         SESSION.add(curr_perm)
         SESSION.commit()
+        SESSION.close()
 
 
 def update_restriction(chat_id, restr_type, locked):
@@ -171,6 +174,7 @@ def update_restriction(chat_id, restr_type, locked):
             curr_restr.preview = locked
         SESSION.add(curr_restr)
         SESSION.commit()
+        SESSION.close()
 
 
 def is_locked(chat_id, lock_type):
@@ -266,3 +270,4 @@ def migrate_chat(old_chat_id, new_chat_id):
         if rest:
             rest.chat_id = str(new_chat_id)
         SESSION.commit()
+    SESSION.close()
