@@ -55,6 +55,7 @@ def gban_user(user_id, name, reason=None):
 
         SESSION.merge(user)
         SESSION.commit()
+        SESSION.close()
         __load_gbanned_userid_list()
 
 
@@ -69,6 +70,7 @@ def update_gban_reason(user_id, name, reason=None):
 
         SESSION.merge(user)
         SESSION.commit()
+        SESSION.close()
         return old_reason
 
 
@@ -79,6 +81,7 @@ def ungban_user(user_id):
             SESSION.delete(user)
 
         SESSION.commit()
+        SESSION.close()
         __load_gbanned_userid_list()
 
 
@@ -109,6 +112,7 @@ def enable_gbans(chat_id):
         chat.setting = True
         SESSION.add(chat)
         SESSION.commit()
+        SESSION.close()
         if str(chat_id) in GBANSTAT_LIST:
             GBANSTAT_LIST.remove(str(chat_id))
 
@@ -122,6 +126,7 @@ def disable_gbans(chat_id):
         chat.setting = False
         SESSION.add(chat)
         SESSION.commit()
+        SESSION.close()
         GBANSTAT_LIST.add(str(chat_id))
 
 
@@ -137,6 +142,7 @@ def __load_gbanned_userid_list():
     global GBANNED_LIST
     try:
         GBANNED_LIST = {x.user_id for x in SESSION.query(GloballyBannedUsers).all()}
+        SESSION.close()
     finally:
         SESSION.close()
 
@@ -147,6 +153,7 @@ def __load_gban_stat_list():
         GBANSTAT_LIST = {
             x.chat_id for x in SESSION.query(GbanSettings).all() if not x.setting
         }
+        SESSION.close()
     finally:
         SESSION.close()
 
@@ -159,6 +166,7 @@ def migrate_chat(old_chat_id, new_chat_id):
             SESSION.add(chat)
 
         SESSION.commit()
+        SESSION.close()
 
 
 # Create in memory userid to avoid disk access
