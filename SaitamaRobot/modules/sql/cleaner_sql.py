@@ -65,6 +65,7 @@ def set_cleanbt(chat_id, is_enable):
 
         SESSION.add(curr)
         SESSION.commit()
+        SESSION.close()
 
 
 def chat_ignore_command(chat_id, ignore):
@@ -84,6 +85,7 @@ def chat_ignore_command(chat_id, ignore):
             ignored = CleanerBlueTextChat(str(chat_id), ignore)
             SESSION.add(ignored)
             SESSION.commit()
+            SESSION.close()
             return True
         SESSION.close()
         return False
@@ -105,6 +107,7 @@ def chat_unignore_command(chat_id, unignore):
 
             SESSION.delete(unignored)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -122,6 +125,7 @@ def global_ignore_command(command):
             ignored = CleanerBlueTextGlobal(str(command))
             SESSION.add(ignored)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
@@ -139,6 +143,7 @@ def global_unignore_command(command):
 
             SESSION.delete(command)
             SESSION.commit()
+            SESSION.close()
             return True
 
         SESSION.close()
