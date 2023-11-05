@@ -1,4 +1,4 @@
-"""
+
 from io import BytesIO
 from time import sleep
 
@@ -12,16 +12,15 @@ from telegram.ext import (
     run_async,
 )
 
-# import SaitamaRobot.modules.sql.users_sql as sql
+import SaitamaRobot.modules.sql.users_sql as sql
 from SaitamaRobot import DEV_USERS, LOGGER, OWNER_ID, dispatcher
 from SaitamaRobot.modules.helper_funcs.chat_status import dev_plus, sudo_plus
-# from SaitamaRobot.modules.sql.users_sql import get_all_users
+from SaitamaRobot.modules.sql.users_sql import get_all_users
 
 USERS_GROUP = 4
 CHAT_GROUP = 5
 DEV_AND_MORE = DEV_USERS.append(int(OWNER_ID))
 
-"""
 def get_user_id(username):
     # ensure valid userid
     if len(username) <= 5:
