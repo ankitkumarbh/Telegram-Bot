@@ -30,6 +30,7 @@ def blacklist_user(user_id, reason=None):
 
         SESSION.add(user)
         SESSION.commit()
+        SESSION.close()
         __load_blacklist_userid_list()
 
 
@@ -40,6 +41,7 @@ def unblacklist_user(user_id):
             SESSION.delete(user)
 
         SESSION.commit()
+        SESSION.close()
         __load_blacklist_userid_list()
 
 
