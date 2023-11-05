@@ -1,3 +1,4 @@
+"""
 import threading
 
 from SaitamaRobot import dispatcher
@@ -231,3 +232,4 @@ def rem_chat(chat_id):
             SESSION.commit()
         else:
             SESSION.close()
+"""
