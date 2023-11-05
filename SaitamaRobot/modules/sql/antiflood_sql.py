@@ -50,6 +50,7 @@ CHAT_FLOOD = {}
 def set_flood(chat_id, amount):
     with INSERTION_FLOOD_LOCK:
         flood = SESSION.query(FloodControl).get(str(chat_id))
+        SESSION.close()
         if not flood:
             flood = FloodControl(str(chat_id))
 
@@ -60,6 +61,7 @@ def set_flood(chat_id, amount):
 
         SESSION.add(flood)
         SESSION.commit()
+        SESSION.close()
 
 
 def update_flood(chat_id: str, user_id) -> bool:
@@ -96,6 +98,7 @@ def set_flood_strength(chat_id, flood_type, value):
     # 5 = tmute
     with INSERTION_FLOOD_SETTINGS_LOCK:
         curr_setting = SESSION.query(FloodSettings).get(str(chat_id))
+        SESSION.close()
         if not curr_setting:
             curr_setting = FloodSettings(
                 chat_id, flood_type=int(flood_type), value=value
@@ -106,11 +109,13 @@ def set_flood_strength(chat_id, flood_type, value):
 
         SESSION.add(curr_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_flood_setting(chat_id):
     try:
         setting = SESSION.query(FloodSettings).get(str(chat_id))
+        SESSION.close()
         if setting:
             return setting.flood_type, setting.value
         else:
@@ -123,6 +128,7 @@ def get_flood_setting(chat_id):
 def migrate_chat(old_chat_id, new_chat_id):
     with INSERTION_FLOOD_LOCK:
         flood = SESSION.query(FloodControl).get(str(old_chat_id))
+        SESSION.close()
         if flood:
             CHAT_FLOOD[str(new_chat_id)] = CHAT_FLOOD.get(str(old_chat_id), DEF_OBJ)
             flood.chat_id = str(new_chat_id)
@@ -135,6 +141,7 @@ def __load_flood_settings():
     global CHAT_FLOOD
     try:
         all_chats = SESSION.query(FloodControl).all()
+        SESSION.close()
         CHAT_FLOOD = {chat.chat_id: (None, DEF_COUNT, chat.limit) for chat in all_chats}
     finally:
         SESSION.close()
