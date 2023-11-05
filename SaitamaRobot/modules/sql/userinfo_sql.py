@@ -53,6 +53,7 @@ def set_user_me_info(user_id, info):
             userinfo = UserInfo(user_id, info)
         SESSION.add(userinfo)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_user_bio(user_id):
@@ -73,3 +74,4 @@ def set_user_bio(user_id, bio):
 
         SESSION.add(userbio)
         SESSION.commit()
+        SESSION.close()
