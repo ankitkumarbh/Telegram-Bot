@@ -90,6 +90,7 @@ def warn_user(user_id, chat_id, reason=None):
 
         SESSION.add(warned_user)
         SESSION.commit()
+        SESSION.close()
 
         return num, reasons
 
@@ -125,6 +126,7 @@ def reset_warns(user_id, chat_id):
 def get_warns(user_id, chat_id):
     try:
         user = SESSION.query(Warns).get((user_id, str(chat_id)))
+        SESSION.close()
         if not user:
             return None
         reasons = user.reasons
@@ -146,17 +148,20 @@ def add_warn_filter(chat_id, keyword, reply):
 
         SESSION.merge(warn_filt)  # merge to avoid duplicate key issues
         SESSION.commit()
+        SESSION.close()
 
 
 def remove_warn_filter(chat_id, keyword):
     with WARN_FILTER_INSERTION_LOCK:
         warn_filt = SESSION.query(WarnFilters).get((str(chat_id), keyword))
+        SESSION.close()
         if warn_filt:
             if keyword in WARN_FILTERS.get(str(chat_id), []):  # sanity check
                 WARN_FILTERS.get(str(chat_id), []).remove(keyword)
 
             SESSION.delete(warn_filt)
             SESSION.commit()
+            SESSION.close()
             return True
         SESSION.close()
         return False
@@ -192,6 +197,7 @@ def set_warn_limit(chat_id, warn_limit):
 
         SESSION.add(curr_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def set_warn_strength(chat_id, soft_warn):
@@ -204,11 +210,13 @@ def set_warn_strength(chat_id, soft_warn):
 
         SESSION.add(curr_setting)
         SESSION.commit()
+        SESSION.close()
 
 
 def get_warn_setting(chat_id):
     try:
         setting = SESSION.query(WarnSettings).get(str(chat_id))
+        SESSION.close()
         if setting:
             return setting.warn_limit, setting.soft_warn
         else:
@@ -252,7 +260,9 @@ def num_warn_chat_filters(chat_id):
 
 def num_warn_filter_chats():
     try:
-        return SESSION.query(func.count(distinct(WarnFilters.chat_id))).scalar()
+        nwf = SESSION.query(func.count(distinct(WarnFilters.chat_id))).scalar()
+        SESSION.close()
+        return nwf
     finally:
         SESSION.close()
 
@@ -265,6 +275,7 @@ def __load_chat_warn_filters():
             WARN_FILTERS[chat_id] = []
 
         all_filters = SESSION.query(WarnFilters).all()
+        SESSION.close()
         for x in all_filters:
             WARN_FILTERS[x.chat_id] += [x.keyword]
 
@@ -309,6 +320,7 @@ def migrate_chat(old_chat_id, new_chat_id):
         for setting in chat_settings:
             setting.chat_id = str(new_chat_id)
         SESSION.commit()
+    SESSION.close()
 
 
 __load_chat_warn_filters()
