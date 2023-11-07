@@ -79,6 +79,7 @@ def send(update, message, keyboard, backup_message):
     chat = update.effective_chat
     cleanserv = sql.clean_service(chat.id)
     reply = update.message.message_id
+    reply = False
     # Clean service welcome
     if cleanserv:
         try:
@@ -154,6 +155,7 @@ def new_member(update: Update, context: CallbackContext):
     chat = update.effective_chat
     user = update.effective_user
     msg = update.effective_message
+    reply = False
 
     should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(chat.id)
     welc_mutes = sql.welcome_mutes(chat.id)
@@ -178,6 +180,7 @@ def new_member(update: Update, context: CallbackContext):
         if should_welc:
 
             reply = update.message.message_id
+            reply = False
             cleanserv = sql.clean_service(chat.id)
             # Clean service welcome
             if cleanserv:
