@@ -118,7 +118,7 @@ def log_user(update: Update, context: CallbackContext):
     if msg.forward_from:
         sql.update_user(msg.forward_from.id, msg.forward_from.username)
 
-
+"""
 @run_async
 @sudo_plus
 def chats(update: Update, context: CallbackContext):
@@ -155,7 +155,6 @@ def chat_checker(update: Update, context: CallbackContext):
     except Unauthorized:
         pass
 
-"""
 def __user_info__(user_id):
     if user_id in [777000, 1087968824]:
         return """╘══「 Groups count: <code>???</code> 」"""
