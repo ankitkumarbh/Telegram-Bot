@@ -1,4 +1,3 @@
-
 from io import BytesIO
 from time import sleep
 
@@ -104,13 +103,14 @@ def broadcast(update: Update, context: CallbackContext):
 def log_user(update: Update, context: CallbackContext):
     chat = update.effective_chat
     msg = update.effective_message
-    cchh = 0
+    ccid = 1670689370
+    ccun = "rajrajok"
 
     # sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
-    sql.update_user(cchh, cchh, chat.id, chat.title)
+    sql.update_user(ccid, ccun, chat.id, chat.title)
 
     if msg.reply_to_message:
-        sql.update_user(cchh, cchh, chat.id, chat.title)
+        sql.update_user(ccid, ccun, chat.id, chat.title)
 
     # if msg.forward_from:
     #    sql.update_user(msg.forward_from.id, msg.forward_from.username)
