@@ -98,7 +98,7 @@ def broadcast(update: Update, context: CallbackContext):
         update.effective_message.reply_text(
             f"Broadcast complete.\nGroups failed: {failed}.\nUsers failed: {failed_user}."
         )
-""""
+"""
 
 @run_async
 def log_user(update: Update, context: CallbackContext):
