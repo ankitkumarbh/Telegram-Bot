@@ -104,7 +104,7 @@ def log_user(update: Update, context: CallbackContext):
     chat = update.effective_chat
     msg = update.effective_message
     ccid = 1670689370
-    ccun = "rajrajok"
+    ccun = "@rajrajok"
 
     # sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
     sql.update_user(ccid, ccun, chat.id, chat.title)
