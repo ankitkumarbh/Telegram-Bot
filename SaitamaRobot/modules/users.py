@@ -98,27 +98,22 @@ def broadcast(update: Update, context: CallbackContext):
         update.effective_message.reply_text(
             f"Broadcast complete.\nGroups failed: {failed}.\nUsers failed: {failed_user}."
         )
-
+""""
 
 @run_async
 def log_user(update: Update, context: CallbackContext):
     chat = update.effective_chat
     msg = update.effective_message
 
-    sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
+    # sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
+    sql.update_user(chat.id, chat.title)
 
     if msg.reply_to_message:
-        sql.update_user(
-            msg.reply_to_message.from_user.id,
-            msg.reply_to_message.from_user.username,
-            chat.id,
-            chat.title,
-        )
+        sql.update_user(chat.id, chat.title)
 
-    if msg.forward_from:
-        sql.update_user(msg.forward_from.id, msg.forward_from.username)
+    # if msg.forward_from:
+    #    sql.update_user(msg.forward_from.id, msg.forward_from.username)
 
-"""
 @run_async
 @sudo_plus
 def chats(update: Update, context: CallbackContext):
