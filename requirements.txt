@@ -48,4 +48,4 @@ hachoir
 pybase64
 pySmartDL
 validators
-
+heroku3
