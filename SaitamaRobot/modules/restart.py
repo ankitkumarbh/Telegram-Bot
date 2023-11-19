@@ -1,6 +1,4 @@
 import os
-os.system("pip3 install heroku3")
-import heroku3
 import asyncio
 import sys
 import time
@@ -18,6 +16,8 @@ async def restart(event):
     if event.chat_id not in OWNER_ID:
         return
     if HEROKU_API_KEY:
+        os.system("pip3 install heroku3")
+        import heroku3
         await event.respond("`Bot Restarting.....`")
         heroku_conn = heroku3.from_key(HEROKU_API_KEY)
         app = heroku_conn.apps()[appname]
