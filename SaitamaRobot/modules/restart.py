@@ -1,5 +1,5 @@
 import os
-pip install heroku3
+os.system("pip3 install heroku3")
 import heroku3
 import asyncio
 import sys
